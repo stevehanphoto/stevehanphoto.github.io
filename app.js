@@ -8,7 +8,7 @@ window.addEventListener("load", function(event) {
 window.addEventListener("load", async e => {
 
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register("/serviceWorker.js")
+    navigator.serviceWorker.register("./serviceWorker.js")
         .then((reg) => console.log("Service worker registered", reg))
         .catch((error) => console.log("Service worker not registered", error));
   }
