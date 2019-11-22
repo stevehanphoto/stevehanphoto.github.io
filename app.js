@@ -52,8 +52,7 @@ window.addEventListener("appinstalled", evt => {
 });
 
 function lightblue(event){
-
-    document.body.style.backgroundImage = "url('./images/background/lightblue.jpg')";
+  document.body.style.backgroundImage = "url('./images/background/lightblue.jpg')";
 };
 
 function lightgold(event) {

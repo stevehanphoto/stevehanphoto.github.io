@@ -1,8 +1,11 @@
-self.addEventListener('install', function(event) {
+const STATIC_CACHE = 'static_v1'
+const DYNAMIC_CACHE = 'dynamic_v1'
+
+self.addEventListener('install', event => {
     console.log('[Service Worker] Installing Service Worker ...', event);
     event.waitUntil(
-        caches.open('static')
-            .then(function(cache) {
+        caches.open(STATIC_CACHE)
+            .then(cache => {
                 console.log('[Service Worker] Precaching App Shell');
                 return cache.addAll([
                     '/',
@@ -14,28 +17,27 @@ self.addEventListener('install', function(event) {
     )
 });
 
-self.addEventListener("activate", function(event) {
+self.addEventListener("activate", event => {
     console.log("[Service Worker] Activating Service Worker ...", event);
     return self.clients.claim();
 });
 
-self.addEventListener("fetch", function(event) {
+self.addEventListener("fetch", event => {
     console.log("[Service Worker] Fetching Service Worker ...", event);
-    event.respondWith(
-        caches.match(event.request)
-            .then(function(response) {
-                if (response) {
-                    return response;
-                } else {
-                    return fetch(event.request)
-                        .then(function(res) {
-                            caches.open('dynamic')
-                                .then(function(cache) {
-                                    cache.put(event.request.url, res.clone());
-                                    return res;
-                                })
-                        });
-                }
-            })
-    );
+    event.respondWith(async function() {
+        const cachedResponse = await caches.match(event.request);
+
+        console.log("cachedResponse:", cachedResponse);
+        if (cachedResponse) return cachedResponse;
+
+        return fetch(event.request)
+            .then(fetchResponse => {
+                console.log("fetchResponse.url:", fetchResponse.url);
+                caches.open(DYNAMIC_CACHE)
+                    .then(cache => {
+                        cache.put(event.request.url, fetchResponse.clone());
+                        return fetchResponse;
+                    })
+            });
+    }());
 });
