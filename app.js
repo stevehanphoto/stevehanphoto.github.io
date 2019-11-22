@@ -4,15 +4,14 @@ window.addEventListener("load", function(event) {
     main = document.getElementsByTagName(main);
 });
 
-
-window.addEventListener("load", async e => {
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register("./serviceWorker.js")
-        .then((reg) => console.log("Service worker registered", reg))
-        .catch((error) => console.log("Service worker not registered", error));
-  }
-});
+if ('serviceWorker' in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register('./serviceworker.js')
+        .then(reg => console.log(`Service worker registered: ${reg}`))
+        .catch(err => console.log(`Service worker not registered: Error: ${err}`));
+  })
+}
 /*
 btnAdd.addEventListener("click", e => {
   // hide our user interface that shows our A2HS button
@@ -39,6 +38,7 @@ window.addEventListener('beforeinstallprompt', function(event) {
     return false;
 });
 */
+/*
 window.addEventListener("beforeinstallprompt", e => {
     console.log("beforeinstallprompt fired");
   // Stash the event so it can be triggered later.
@@ -46,7 +46,7 @@ window.addEventListener("beforeinstallprompt", e => {
   // Update UI notify the user they can add to home screen
   showInstallPromotion();
 });
-
+*/
 window.addEventListener("appinstalled", evt => {
     console.log("a2hs installed");
 });
